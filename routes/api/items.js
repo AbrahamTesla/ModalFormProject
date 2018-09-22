@@ -13,8 +13,9 @@ router.route("/")
 
 //matches with route("api/items/:id")
 router
-    .route(":/id")
+    .route("/:id")
     .get(productController.findById)
+    .put(productController.update)
     .delete(productController.remove);
 
 // @route   POST api/items

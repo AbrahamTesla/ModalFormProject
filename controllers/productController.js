@@ -26,5 +26,12 @@ module.exports = {
             .findById(req.params.id)
             .then(dbModel => res.json(dbModel))
             .catch(err => res.status(422).json(err));
+    },
+    update: function(req, res){
+        db.Product
+            .findOneAndUpdate({_id:req.params.id}, req.body)
+            .then(dbModel => res.json(dbModel))
+            .catch(err => res.status(422).json(err));
     }
+    
 };
