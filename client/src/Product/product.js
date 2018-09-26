@@ -182,6 +182,7 @@ class Products extends Component {
           <Table>
                       <thead>
                         <tr>
+                            <th></th>
                             <th className="productTitle">Product Name</th>                 
                             <th className="productDescription">Description</th>             
                             <th className="productRent">Daily_Rent</th>                 
