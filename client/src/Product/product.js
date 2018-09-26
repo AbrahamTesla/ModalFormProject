@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { Button, Modal, Table, ModalHeader,Form, ModalBody, FormGroup,ModalFooter, Label, Input, Container } from "reactstrap";
-// import { CSSTransition, TransitionGroup } from "react-transition-group";
-// import uuid from "uuid";
 // import DropBox from "./Droppic.js";
 import Dropzone from "react-dropzone";
 import request from "superagent";
-// import DropModal from "./modal";
 import API from "../utils/API"
-import  ListItem from "./../Components/Listitem";
-import List from "./../Components/List";
+// import  ListItem from "./../Components/Listitem";
+// import { List, Listitem } from "./../Components/List";
 import DeleteButton from "./../Components/DeleteButton";
+import ViewProductButton from "./../Components/viewProductBtn";
 import "./product.css";
 import "../App.css";
 
@@ -25,26 +23,18 @@ class Products extends Component {
       productArr: [],
       name: "",
       description: "",
-      daily_Rent: Number,
+      daily_Rent: 0,
       notes: "",
-      //select option
-      // select:"",
-      item: Number,
+      item: 0,
       modal: false,
+      viewList: false,
       uploadedFile: null,
       uploadedFileCloudinaryUrl: ""
     };
     this.toggle = this.toggle.bind(this);
+    this.view = this.view.bind(this);
   }
   
-  
-  //Anil's work
-  // handleInputValue = event => {
-  //   this.props.onChange({ [e.target.name]: e.target.value });
-  //   this.setState({
-  //     [event.target.name]: event.target.value
-  //   });
-  // };
   componentDidMount(){
     this.loadProducts();
   }
@@ -75,11 +65,16 @@ class Products extends Component {
       .catch(err => console.log(err))
     };
   
-
   //Toggle modal function
   toggle() {
     this.setState({
       modal: !this.state.modal
+    });
+  };
+  view(){
+    console.log('view button clicked');
+    this.setState({
+      viewList: !this.state.viewList
     });
   }
   //This helps track the number of item on the database which also get rendered on modal
@@ -103,13 +98,6 @@ class Products extends Component {
     .then(res => console.log(this.productName, this.description,this.daily_Rent),this.loadProducts())
     .catch(err => console.log(err));
     
-    //Anil's work
-    // this.props.onChange({
-    //   productName: "",
-    //   Description: "",
-    //   Daily_Rent: "",
-    //   Note: ""
-    // });
   };
   onImageDrop(files) {
     this.setState({ uploadedFile: files[0] });
@@ -132,7 +120,6 @@ class Products extends Component {
       }
     });
   }
- // <a href="#" onClick={(event) => { func1(); func2();}}>Test Link</a>
   render() {
     return (
       <Container>
@@ -156,17 +143,16 @@ class Products extends Component {
               placeholder="Product Description"
             />
           </FormGroup>
-
-          <FormGroup>
-            <Label for="rent_Id">Price per daily Rent</Label>
-            <Input
-              value={this.state.daily_Rent}
-              onChange={this.handleInputChange}
-              id="rent_Id"
-              name="daily_Rent"
-              placeholder= "Number Only!"             
-            />
-          </FormGroup>
+            <FormGroup>
+              <Label for="rent_Id">Price per daily Rent</Label>
+              <Input
+                value={this.state.daily_Rent}
+                onChange={this.handleInputChange}
+                id="rent_Id"
+                name="daily_Rent"
+                placeholder= "Number Only!"             
+              />
+            </FormGroup>
 
           {/* <FormGroup>
             <Label for="exampleSelect">For Many days you want to rent</Label>
@@ -187,24 +173,58 @@ class Products extends Component {
               name="notes" 
               type="text"      
             />
-          </FormGroup>          
-            {this.state.productArr.length ? (
-              <List>
-                {this.state.productArr.map(product => (
-                  <ListItem key={product._id}>
-                     {product.name} - ${product.daily_Rent}
-                      <DeleteButton 
+          </FormGroup>  
+          <ViewProductButton 
+              onClick={this.view}
+            /> 
+          {this.state.viewList ? (
+            this.state.productArr.length ? (
+          <Table>
+                      <thead>
+                        <tr>
+                            <th className="productTitle">Product Name</th>                 
+                            <th className="productDescription">Description</th>             
+                            <th className="productRent">Daily_Rent</th>                 
+                        </tr>
+                      </thead>
+                      {/* (this.state.productArr.length) ? */}
+                        {this.state.productArr.map(product =>    
+                          <tr key={product._id}>
+                            <th>{product.addItem}</th>
+                            <th>{product.name}</th>
+                            <th>{product.description}</th>
+                            <th>${product.daily_Rent}</th>
+                            <DeleteButton 
                         onClick={() => this.delete (product._id)}                     
-                     />
-                  </ListItem>
-                ))}
-              </List>
-            
-    ): (
-     <h3>No results</h3>
-  
-    )}
-    {/* // <a href="#" onClick={(event) => { func1(); func2();}}>Test Link</a> */}
+                        />
+                          </tr>
+                        )}
+                        
+            </Table>  ) : <h3>No results</h3>
+          ):
+                   null             
+           }
+
+
+            {/* {this.state.viewList ? 
+                        (this.state.productArr.length) ? (
+                <List>
+                  {this.state.productArr.map(product => (
+                    <Listitem key={product._id}>
+                        {product.name} - ${product.daily_Rent}
+                        <DeleteButton 
+                        onClick={() => this.delete (product._id)}                     
+                        />
+                    </Listitem>
+                    ))}
+                </List>
+                        
+                  ): (
+                    <h3>No results</h3>
+                )
+              :
+                null
+                } */}
           <Button className="btn" onClick={this.handleFormSubmit}>
             Submit
           </Button>
@@ -212,11 +232,11 @@ class Products extends Component {
         <Modal
           isOpen={this.state.modal}
           toggle={this.toggle}
-          // className={this.props.className}
         >
-          <ModalHeader toggle={this.toggle}>Product info</ModalHeader>
+          <ModalHeader toggle={this.toggle}>Thank You!</ModalHeader>
               <ModalBody>
-                  <Table>
+                <h1 id="title">Product Successfully Added</h1>
+                  {/* <Table>
                       <thead>
                         <tr>
                             <th>#</th>
@@ -233,7 +253,7 @@ class Products extends Component {
                             <th>${product.daily_Rent}</th>
                           </tr>
                         )}       
-                      </Table>
+                      </Table> */}
               </ModalBody>
           <ModalFooter>
             {/* <Button color="primary" onClick={this.toggle}>

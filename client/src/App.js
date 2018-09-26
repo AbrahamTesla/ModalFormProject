@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import AppNavbar from "./Components/AppNavbar.js";
 import Products from "./Product/product";
-// import DropModal from "./Components/modal";
 import "./App.css";
 // import "./components/product.css";
 // import { ListGroup, ListGroupItem } from "reactstrap";
